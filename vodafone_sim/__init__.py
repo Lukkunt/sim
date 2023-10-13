@@ -35,7 +35,20 @@ def get_sim_activity(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
 
 get_sim_activity("C:\Code\sim\Data\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv",
-         "C:\Code\sim\Data\Filtered_Itemised.csv", "C:\Code\sim\Data\Filter.csv")
+                 "C:\Code\sim\Data\Filtered_Itemised.csv", "C:\Code\sim\Data\Filter.csv")
 
-def merge_full_filter ():
-    
+
+def join_full_filter(Filtered_Full, Filter):
+    df1 = pd.read_csv(Filtered_Full)
+    df2 = pd.read_csv(Filter)
+    df1 = df1.set_index("ICCID")
+    df2 = df2.set_index("ICCID")
+    df3 = df1.join(df2)
+    print(df1.head())
+    print(df2.head())
+
+    df3.to_csv("C:\Code\sim\Data\Final.csv")
+
+
+join_full_filter("C:\Code\sim\Data\Filtered_Full.csv",
+                 "C:\Code\sim\Data\Filter.csv")
