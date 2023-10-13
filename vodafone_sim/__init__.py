@@ -8,6 +8,9 @@ def main(SIM_Inventory_Full_File_Path, Filtered_Data_Output_File_Path):
     data = pd.read_csv(SIM_Inventory_Full_File_Path)
     # cuts full data to 4 collumns
     data = data[["ICCID", "IMSI", "SIM_State"]]
+    # create active.live filter
+    filt = (data["SIM_State"] == "Active.Live")
+    data = data[filt]
     # sets ICCID as index for data
     data = data.set_index("ICCID")
     # creates a csv file containing all active vodafone simcards with Has_Been_Active.Test : Y or N
@@ -44,10 +47,8 @@ def join_full_filter(Filtered_Full, Filter):
     df1 = df1.set_index("ICCID")
     df2 = df2.set_index("ICCID")
     df3 = df1.join(df2)
-    print(df1.head())
-    print(df2.head())
 
-    df3.to_csv("C:\Code\sim\Data\Final.csv")
+    df3.to_csv("C:\Code\sim\Data\Joined.csv")
 
 
 join_full_filter("C:\Code\sim\Data\Filtered_Full.csv",
