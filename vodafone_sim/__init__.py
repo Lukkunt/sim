@@ -18,7 +18,7 @@ main('C:\Code\sim\Data\SIM_Inventory_Full.csv',
      "C:\Code\sim\Data\Filtered_Full.csv")
 
 
-def get_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Output_File_Path, Filter_File_Path):
+def get_sim_activity(Itemised_data_usage_for_device_File_Path, Filtered_Data_Output_File_Path, Filter_File_Path):
     data = pd.read_csv(Itemised_data_usage_for_device_File_Path)
     # cuts full data to 2 collumns
     data = data[["ICCID", "Total_Kbytes"]]
@@ -34,5 +34,8 @@ def get_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Output_File
     # filters data to contain only != "0.00" values
 
 
-get_data("C:\Code\sim\Data\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv",
+get_sim_activity("C:\Code\sim\Data\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv",
          "C:\Code\sim\Data\Filtered_Itemised.csv", "C:\Code\sim\Data\Filter.csv")
+
+def merge_full_filter ():
+    
