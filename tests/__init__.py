@@ -26,7 +26,6 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
     # Convert the "Total_Kbytes" column to float
     data = convert_total_kbytes_to_float(data)
-
     # Now, the "Total_Kbytes" column contains float values
 
     # Group by "ICCID" and sum the "Total_Kbytes" values
@@ -52,7 +51,6 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
 # Specify the file paths
 Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv"
-# Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\test_111 - Sheet1.csv"
 Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Filtered_Itemised2.csv"
 Filter_File_Path = "C:\\Code\\sim\\Data\\Filter.csv"
 
