@@ -9,8 +9,8 @@ def main(SIM_Inventory_Full_File_Path, Filtered_Data_Output_File_Path):
     # cuts full data to 4 collumns
     data = data[["ICCID", "IMSI", "SIM_State"]]
     # create active.live filter
-    filt = (data["SIM_State"] == "Active.Live")
-    data = data[filt]
+    # filt = (data["SIM_State"] == "Active.Live")
+    # data = data[filt]
     # sets ICCID as index for data
     data = data.set_index("ICCID")
     # creates a csv file containing all active vodafone simcards with Has_Been_Active.Test : Y or N
@@ -27,7 +27,7 @@ def get_sim_activity(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
     data = data[["ICCID", "Total_Kbytes"]]
     # groups all comunication rows for each device
     # displays the max "Total_Kbytes" value ---- if it is "0.00" it means that this device did not communicate in the time range of selected report
-    data = data.groupby('ICCID').agg("max")
+    data = data.groupby('ICCID').agg("sum")
     # Saves file to csv
     data.to_csv(Filtered_Data_Output_File_Path)
     # CREATES FILTER; TRUE != "0.00";
