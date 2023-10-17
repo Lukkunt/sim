@@ -8,7 +8,7 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
     # Keep only the "ICCID" and "Total_Kbytes" columns
     data = data[["ICCID", "Total_Kbytes"]]
 
-    # Function to convert strings with multiple periods and commas to float
+    # Function to convert strings with both comma-separated values and periods as decimals to float
     def convert_to_float(s):
         s = s.replace(',', '')  # Remove commas
         parts = s.split('.')  # Split by periods
@@ -40,7 +40,7 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
 # Specify the file paths
 Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv"
-Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Filtered_Itemised2.csv"
+Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Filtered_Itemised.csv"
 Filter_File_Path = "C:\\Code\\sim\\Data\\Filter.csv"
 
 # Call the function to process the data and save results
