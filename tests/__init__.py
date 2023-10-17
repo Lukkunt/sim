@@ -6,16 +6,28 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
     data = pd.read_csv(Itemised_data_usage_for_device_File_Path)
 
     # Keep only the "ICCID" and "Total_Kbytes" columns
-    data = data[["ICCID", "Total_Kbytes"],]
+    data = data[["ICCID", "Total_Kbytes"]]
 
-    # Function to sepate strings with multiple periods and convert them to float
+    # This function converts the "Total_Kbytes" column in a pandas DataFrame from string to float, handling commas and non-convertible data.
+    def convert_total_kbytes_to_float(dataframe):
+        # Define a function to convert a single value from string to float
+        def convert_single_value(s):
+            try:
+                # Remove commas and convert to float
+                return float(s.replace(',', ''))
+            except ValueError:
+                return s  # Return the original value if conversion fails
 
-    def convert_to_float(s):
-        parts = s.split(',')  # Split by ","
-        return sum(map(float, parts))
+        # Apply the conversion function to the "Total_Kbytes" column
+        dataframe['Total_Kbytes'] = dataframe['Total_Kbytes'].apply(
+            convert_single_value)
 
-    # Apply the conversion function to "Total_Kbytes" column
-    data['Total_Kbytes'] = data['Total_Kbytes'].apply(convert_to_float)
+        return dataframe
+
+    # Convert the "Total_Kbytes" column to float
+    data = convert_total_kbytes_to_float(data)
+
+    # Now, the "Total_Kbytes" column contains float values
 
     # Group by "ICCID" and sum the "Total_Kbytes" values
     data = data.groupby('ICCID').agg("sum")
@@ -40,6 +52,7 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
 # Specify the file paths
 Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv"
+# Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\test_111 - Sheet1.csv"
 Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Filtered_Itemised2.csv"
 Filter_File_Path = "C:\\Code\\sim\\Data\\Filter.csv"
 
