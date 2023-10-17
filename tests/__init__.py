@@ -6,12 +6,12 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
     data = pd.read_csv(Itemised_data_usage_for_device_File_Path)
 
     # Keep only the "ICCID" and "Total_Kbytes" columns
-    data = data[["ICCID", "Total_Kbytes"]]
+    data = data[["ICCID", "Total_Kbytes"],]
 
-    # Function to convert strings with multiple periods and commas to float
+    # Function to sepate strings with multiple periods and convert them to float
+
     def convert_to_float(s):
-        s = s.replace(',', '')  # Remove commas
-        parts = s.split('.')  # Split by periods
+        parts = s.split(',')  # Split by ","
         return sum(map(float, parts))
 
     # Apply the conversion function to "Total_Kbytes" column
