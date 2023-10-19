@@ -41,6 +41,8 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
     filt = (data["Total_Kbytes"] != 0.00)
 
     # Save the filter to a CSV file (you may want to save it as a boolean mask)
+    # Q: ADD ICCID COLUMN TO FILTER
+    #
     filt.to_csv(Filter_File_Path, index=False)
 
     # Filter data to contain only non-zero values
@@ -53,10 +55,26 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv"
 Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Filtered_Itemised2.csv"
 Filter_File_Path = "C:\\Code\\sim\\Data\\Filter.csv"
-
+Filtered_Full = "C:\Code\sim\Data\Filtered_Full.csv"
+Filter = "C:\Code\sim\Data\Filter.csv"
 # Call the function to process the data and save results
 total_sum, non_zero_data = process_sim_data(
     Itemised_data_usage_for_device_File_Path, Filtered_Data_Output_File_Path, Filter_File_Path)
 
 # Print the total sum of Total_Kbytes
 print("Total Sum of Total_Kbytes:", total_sum)
+
+
+def join_full_filter(Filtered_Full, Filter):
+    df1 = pd.read_csv(Filtered_Full)
+
+    df2 = pd.read_csv(Filter)
+    print(df2.head())
+    df1 = df1.set_index("ICCID")
+    df2 = df2.set_index("ICCID")
+    df3 = df1.join(df2)
+
+    df3.to_csv("C:\Code\sim\Data\Joined.csv")
+
+
+join_full_filter(Filtered_Full, Filter)
