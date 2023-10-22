@@ -54,7 +54,7 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
 
 # Specify the file paths
-Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Source\\Itemised_data_usage_for_device_(STCU)_20231001_20231031_2023-10-10T84546390Z.csv"
+Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Source\\Itemised_data_usage_for_device_(STCU)_20231001_20231020_2023-10-21T123413273Z.csv"
 Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Output\\Filtered_Itemised.csv"
 Filter_File_Path = "C:\\Code\\sim\\Data\\Output\\Filter.csv"
 Filtered_Full = "C:\\Code\\sim\\Data\\Output\\Filtered_Full.csv"
