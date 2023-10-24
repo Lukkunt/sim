@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 
 def process_sim_data(Itemised_data_Path, Filtered_Itemised_Path, Filter_Path):
@@ -44,11 +45,14 @@ def process_sim_data(Itemised_data_Path, Filtered_Itemised_Path, Filter_Path):
     filt = filt.rename("Active")
 
     # Save the filter to a CSV file (you may want to save it as a boolean mask)
-    print(filt.head())
     filt.to_csv(Filter_Path)
 
     # Filter data to contain only non-zero values
     non_zero_data = data[filt]
+
+    # Print the total sum of Total_Kbytes
+    print("Total Sum of Total_Kbytes:", total_sum)
+    print(Itemised_data_Path)
 
     return total_sum, non_zero_data
 
@@ -59,12 +63,34 @@ Filtered_Itemised_Path = "C:\\Code\\sim\\Data\\Output\\Filtered_Itemised.csv"
 Filter_Path = "C:\\Code\\sim\\Data\\Output\\Filter.csv"
 Filtered_Full = "C:\\Code\\sim\\Data\\Output\\Filtered_Full.csv"
 Output_Path = "C:\\Code\\sim\\Data\\Output\\Output.csv"
+input_folder_path = 'C:\Code\sim\Data\Source'
+output_folder_path = 'C:\Code\sim\Data\Output'
 # Call the function to process the data and save results
 total_sum, non_zero_data = process_sim_data(
     Itemised_data_Path, Filtered_Itemised_Path, Filter_Path)
 
+# Loop through all files in the folder
+for filename in os.listdir(input_folder_path):
+    # Check if the filename starts with "Itemised_data_usage_for_device_(STCU)_"
+    if filename.startswith('Itemised_data_usage_for_device_(STCU)_'):
+        # Extract the information after "Itemised_data_usage_for_device_(STCU)_"
+        info = filename.split('Itemised_data_usage_for_device_(STCU)_')[
+            1].split('.')[0]
+
+        # Construct the full path to the file
+        file_path = os.path.join(input_folder_path, filename)
+
+        # Construct the output file paths
+        filtered_file_path = os.path.join(
+            output_folder_path, 'filtered_' + info + '.csv')
+        filter_path = os.path.join(
+            output_folder_path, 'filter_' + info + '.csv')
+
+        # Call the process_sim_data() function for the current file
+        total_sum, non_zero_data = process_sim_data(
+            file_path, filtered_file_path, filter_path)
+
 # Print the total sum of Total_Kbytes
-print("Total Sum of Total_Kbytes:", total_sum)
 
 
 def join_full_filter(Filtered_Full, Filter, Filtered_Itemised_Path, Output_Path):
