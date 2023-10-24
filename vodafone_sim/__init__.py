@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Output_File_Path, Filter_File_Path):
+def process_sim_data(Itemised_data_Path, Filtered_Itemised_Path, Filter_Path):
     # Read data from the CSV file
-    data = pd.read_csv(Itemised_data_usage_for_device_File_Path)
+    data = pd.read_csv(Itemised_data_Path)
 
     # Keep only the "ICCID" and "Total_Kbytes" columns
     data = data[["ICCID", "Total_Kbytes"]]
@@ -35,7 +35,7 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
     total_sum = data['Total_Kbytes'].sum()
 
     # Save the filtered data to a CSV file
-    data.to_csv(Filtered_Data_Output_File_Path)
+    data.to_csv(Filtered_Itemised_Path)
 
     # Create a filter for values not equal to 0.00
     filt = (data["Total_Kbytes"] != 0.00)
@@ -45,7 +45,7 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
     # Save the filter to a CSV file (you may want to save it as a boolean mask)
     print(filt.head())
-    filt.to_csv(Filter_File_Path)
+    filt.to_csv(Filter_Path)
 
     # Filter data to contain only non-zero values
     non_zero_data = data[filt]
@@ -54,22 +54,23 @@ def process_sim_data(Itemised_data_usage_for_device_File_Path, Filtered_Data_Out
 
 
 # Specify the file paths
-Itemised_data_usage_for_device_File_Path = "C:\\Code\\sim\\Data\\Source\\Itemised_data_usage_for_device_(STCU)_20231001_20231020_2023-10-21T123413273Z.csv"
-Filtered_Data_Output_File_Path = "C:\\Code\\sim\\Data\\Output\\Filtered_Itemised.csv"
-Filter_File_Path = "C:\\Code\\sim\\Data\\Output\\Filter.csv"
+Itemised_data_Path = "C:\\Code\\sim\\Data\\Source\\Itemised_data_usage_for_device_(STCU)_20231001_20231020_2023-10-21T123413273Z.csv"
+Filtered_Itemised_Path = "C:\\Code\\sim\\Data\\Output\\Filtered_Itemised.csv"
+Filter_Path = "C:\\Code\\sim\\Data\\Output\\Filter.csv"
 Filtered_Full = "C:\\Code\\sim\\Data\\Output\\Filtered_Full.csv"
+Output_Path = "C:\\Code\\sim\\Data\\Output\\Output.csv"
 # Call the function to process the data and save results
 total_sum, non_zero_data = process_sim_data(
-    Itemised_data_usage_for_device_File_Path, Filtered_Data_Output_File_Path, Filter_File_Path)
+    Itemised_data_Path, Filtered_Itemised_Path, Filter_Path)
 
 # Print the total sum of Total_Kbytes
 print("Total Sum of Total_Kbytes:", total_sum)
 
 
-def join_full_filter(Filtered_Full, Filter):
+def join_full_filter(Filtered_Full, Filter, Filtered_Itemised_Path, Output_Path):
     df1 = pd.read_csv(Filtered_Full)
-    df2 = pd.read_csv(Filter_File_Path)
-    df3 = pd.read_csv(Filtered_Data_Output_File_Path)
+    df2 = pd.read_csv(Filter_Path)
+    df3 = pd.read_csv(Filtered_Itemised_Path)
 
     df1 = df1.set_index("ICCID")
     df2 = df2.set_index("ICCID")
@@ -77,7 +78,8 @@ def join_full_filter(Filtered_Full, Filter):
 
     df4 = df1.join([df2, df3])
 
-    df4.to_csv("C:\\Code\\sim\\Data\\Output\\Joined.csv")
+    df4.to_csv(Output_Path)
 
 
-join_full_filter(Filtered_Full, Filter_File_Path)
+join_full_filter(Filtered_Full, Filter_Path,
+                 Filtered_Itemised_Path, Output_Path)
