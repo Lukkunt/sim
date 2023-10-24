@@ -1,5 +1,34 @@
 import pandas as pd
 import os
+from loguru import logger
+
+# Specify the folder paths
+input_folder_path = 'C:\Code\sim\Data\Source'
+output_folder_path = 'C:\Code\sim\Data\Output'
+
+# Get a list of file paths in the input folder
+file_paths = [os.path.join(input_folder_path, f) for f in os.listdir(
+    input_folder_path) if f.endswith('.csv')]
+
+itemised_data_paths = []
+sim_inventory_paths = []
+for file_path in file_paths:
+    if "Itemised_data_usage_for_device_(STCU)_" in file_path:
+        itemised_data_paths.append(file_path)
+    elif "SIM_Inventory_Full" in file_path:
+        sim_inventory_paths.append(file_path)
+
+logger.debug(itemised_data_paths)
+logger.debug(sim_inventory_paths)
+
+# Specify the file paths
+Itemised_data_Path = "C:\\Code\\sim\\Data\\Source\\Itemised_data_usage_for_device_(STCU)_20231001_20231020_2023-10-21T123413273Z.csv"
+Filtered_Itemised_Path = "C:\\Code\\sim\\Data\\Output\\Filtered_Itemised.csv"
+Filter_Path = "C:\\Code\\sim\\Data\\Output\\Filter.csv"
+Filtered_Full = "C:\\Code\\sim\\Data\\Output\\Filtered_Full.csv"
+Output_Path = "C:\\Code\\sim\\Data\\Output\\Output.csv"
+input_folder_path = 'C:\Code\sim\Data\Source'
+output_folder_path = 'C:\Code\sim\Data\Output'
 
 
 def process_sim_data(Itemised_data_Path, Filtered_Itemised_Path, Filter_Path):
@@ -51,25 +80,19 @@ def process_sim_data(Itemised_data_Path, Filtered_Itemised_Path, Filter_Path):
     non_zero_data = data[filt]
 
     # Print the total sum of Total_Kbytes
-    print("Total Sum of Total_Kbytes:", total_sum)
-    print(Itemised_data_Path)
+    logger.debug({total_sum})
+    # print(Itemised_data_Path)
 
     return total_sum, non_zero_data
 
 
-# Specify the file paths
-Itemised_data_Path = "C:\\Code\\sim\\Data\\Source\\Itemised_data_usage_for_device_(STCU)_20231001_20231020_2023-10-21T123413273Z.csv"
-Filtered_Itemised_Path = "C:\\Code\\sim\\Data\\Output\\Filtered_Itemised.csv"
-Filter_Path = "C:\\Code\\sim\\Data\\Output\\Filter.csv"
-Filtered_Full = "C:\\Code\\sim\\Data\\Output\\Filtered_Full.csv"
-Output_Path = "C:\\Code\\sim\\Data\\Output\\Output.csv"
-input_folder_path = 'C:\Code\sim\Data\Source'
-output_folder_path = 'C:\Code\sim\Data\Output'
-# Call the function to process the data and save results
-total_sum, non_zero_data = process_sim_data(
-    Itemised_data_Path, Filtered_Itemised_Path, Filter_Path)
+for path in itemised_data_paths:
+    logger.info(path)
+    total_sum, non_zero_data = process_sim_data(
+        path, Filtered_Itemised_Path, Filter_Path)
+    print(f"Total sum for {path}: {total_sum}")
 
-# Loop through all files in the folder
+""" # Loop through all files in the folder
 for filename in os.listdir(input_folder_path):
     # Check if the filename starts with "Itemised_data_usage_for_device_(STCU)_"
     if filename.startswith('Itemised_data_usage_for_device_(STCU)_'):
@@ -88,7 +111,7 @@ for filename in os.listdir(input_folder_path):
 
         # Call the process_sim_data() function for the current file
         total_sum, non_zero_data = process_sim_data(
-            file_path, filtered_file_path, filter_path)
+            file_path, filtered_file_path, filter_path) """
 
 # Print the total sum of Total_Kbytes
 
