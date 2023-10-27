@@ -92,7 +92,7 @@ for path in itemised_data_paths:
         path, Filtered_Itemised_Path, Filter_Path)
     print(f"Total sum for {path}: {total_sum}")
 
-""" # Loop through all files in the folder
+ # Loop through all files in the folder
 for filename in os.listdir(input_folder_path):
     # Check if the filename starts with "Itemised_data_usage_for_device_(STCU)_"
     if filename.startswith('Itemised_data_usage_for_device_(STCU)_'):
@@ -111,7 +111,7 @@ for filename in os.listdir(input_folder_path):
 
         # Call the process_sim_data() function for the current file
         total_sum, non_zero_data = process_sim_data(
-            file_path, filtered_file_path, filter_path) """
+            file_path, filtered_file_path, filter_path) 
 
 # Print the total sum of Total_Kbytes
 
