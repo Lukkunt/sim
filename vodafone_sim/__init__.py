@@ -126,12 +126,18 @@ for filename in os.listdir(input_folder_path):
 
 def sum_all_comunication(filtered_full_path):
     df1 = pd.read_csv(filtered_full_path)
+    df2 = df1
     df1 = df1.drop(['Unnamed: 0', 'IMSI', 'SIM_State'], axis=1)
-    df1.set_index("ICCID")
+    df1 = df1.set_index("ICCID")
+    df2 = df2.set_index("ICCID")
     column_names = df1.columns.tolist()
-    print(df1[column_names].sum().head())
+    print(column_names)
+    df1 = df1[column_names].sum(axis=1)
+    df1.name = "Sum of all comunication"
+    df3 = df2.join(df1)
+    df3.to_csv(filtered_full_path)
 
-    return df1
+    return df3
 
 
 sum_all_comunication(filtered_full_path)
