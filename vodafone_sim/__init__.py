@@ -43,23 +43,11 @@ def process_sim_data(source_file_path, filtered_file_path, filter_Path):
     # Save the filtered data to a CSV file
     data.to_csv(filtered_file_path)
 
-    # Create a filter for values not equal to 0.00
-    filt = (data["Total_Kbytes"] != 0.00)
-
-    # Rename the "Total_Kbytes" column to "Active"
-    filt = filt.rename("Active")
-
-    # Save the filter to a CSV file (you may want to save it as a boolean mask)
-    filt.to_csv(filter_Path)
-
-    # Filter data to contain only non-zero values
-    non_zero_data = data[filt]
-
     # Print the total sum of Total_Kbytes
     logger.debug({total_sum})
     # print(Itemised_data_Path)
 
-    return total_sum, non_zero_data
+    return total_sum,
 
 
 def join_full_filter(filtered_file_path, filtered_full_path):
@@ -117,7 +105,7 @@ for filename in os.listdir(input_folder_path):
             output_folder_path, 'filter_' + info + '.csv')
 
         # Call the process_sim_data() function for the current file
-        total_sum, non_zero_data = process_sim_data(
+        total_sum = process_sim_data(
             source_file_path, filtered_file_path, filter_path)
 
         join_full_filter(filtered_file_path,
@@ -141,3 +129,18 @@ def sum_all_comunication(filtered_full_path):
 
 
 sum_all_comunication(filtered_full_path)
+
+
+def suspend_list(filtered_full_path):
+    df1 = pd.read_csv(filtered_full_path)
+    df1 = df1.set_index("ICCID")
+    filt = ((df1["Sum of all comunication"] == 0.00)
+            & (df1["SIM_State"] == "Active.Live"))
+    filt.name = "Suspend"
+    df2 = df1.join(filt)
+    df2.to_csv(filtered_full_path)
+    filt = filt[filt == True]
+    filt.to_csv(f"{output_folder_path}/suspend_list.csv")
+
+
+suspend_list(filtered_full_path)
