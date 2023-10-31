@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from loguru import logger
 import sys
+import datetime
 
 script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
 print(script_directory)
@@ -68,6 +69,9 @@ def join_full_filter(filtered_file_path, filtered_full_path):
     df3 = df2.join(df1)
     df3.to_csv(filtered_full_path)
 
+# Filers the SIM_Inventory_Full file to only keep the ICCID, IMSI and SIM_State columns
+# saves result to filtered_SIM_Inventory_Full file
+
 
 def sim_inventory_filter(input_folder_path, output_folder_path):
 
@@ -85,11 +89,41 @@ def sim_inventory_filter(input_folder_path, output_folder_path):
             df1 = pd.read_csv(source_file_path)
             df1 = df1[["ICCID", "IMSI", "SIM_State"]]
             df1.to_csv(filtered_full_path)
-            return filtered_full_path
+            return filtered_full_path, source_file_path
 
 
-filtered_full_path = sim_inventory_filter(
+filtered_full_path, source_file_path = sim_inventory_filter(
     input_folder_path, output_folder_path)
+
+
+def remove_new_sim(source_file_path):
+    # Create new sim file path
+    new_sim_file_path = (f"{output_folder_path}/new_sim_file.csv")
+    # Read data from the CSV file
+    data = pd.read_csv(source_file_path)
+
+    # Keep only the "ICCID" and "Total_Kbytes" and  columns
+    data = data[["ICCID", "First_Used"]]
+    data = data.set_index("ICCID")
+    data = data.dropna()
+    # Get today's date
+    today = datetime.date.today()
+    today = str(today)
+
+    # Define a function to convert the datetime string
+    def convert_datetime(s):
+        dt = datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S %z")
+        return dt.strftime("%Y-%m-%d")
+
+    # Apply the function to the column in the DataFrame
+    data["First_Used"] = data["First_Used"].apply(convert_datetime)
+
+    filt = (data["First_Used"] < today)
+    data["filt"] = filt
+    data.to_csv(new_sim_file_path)
+
+
+remove_new_sim(source_file_path)
 
 # Loop through all files in the folder
 for filename in os.listdir(input_folder_path):
