@@ -1,18 +1,23 @@
 import pandas as pd
 import os
 from loguru import logger
+import sys
+
+script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
+print(script_directory)
+# script_directory = script_directory.replace("", "")
 
 # Specify the folder paths
-input_folder_path = 'C:\Code\sim\Data\Source'
-output_folder_path = 'C:\Code\sim\Data\Output'
+input_folder_path = script_directory.replace("\\vodafone_sim", "\Data\Source")
+output_folder_path = script_directory.replace("\\vodafone_sim", "\Data\Output")
 
 
-def process_sim_data(source_file_path, filtered_file_path, filter_Path):
+def process_sim_data(source_file_path, filtered_file_path):
     # Read data from the CSV file
     data = pd.read_csv(source_file_path)
 
-    # Keep only the "ICCID" and "Total_Kbytes" columns
-    data = data[["ICCID", "Total_Kbytes"]]
+    # Keep only the "ICCID" and "Total_Kbytes" and  columns
+    data = data[["ICCID", "Total_Kbytes",]]
 
     # This function converts the "Total_Kbytes" column in a pandas DataFrame from string to float, handling commas and non-convertible data.
     def convert_total_kbytes_to_float(dataframe):
@@ -101,12 +106,10 @@ for filename in os.listdir(input_folder_path):
         # Construct the output file paths
         filtered_file_path = os.path.join(
             output_folder_path, 'filtered_' + info + '.csv')
-        filter_path = os.path.join(
-            output_folder_path, 'filter_' + info + '.csv')
 
         # Call the process_sim_data() function for the current file
         total_sum = process_sim_data(
-            source_file_path, filtered_file_path, filter_path)
+            source_file_path, filtered_file_path,)
 
         join_full_filter(filtered_file_path,
                          filtered_full_path)
