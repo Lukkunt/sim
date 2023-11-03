@@ -1,11 +1,9 @@
 import pandas as pd
 import os
-from loguru import logger
 import sys
 import datetime
 
 script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
-print(script_directory)
 # script_directory = script_directory.replace("", "")
 
 # Specify the folder paths
@@ -15,7 +13,7 @@ output_folder_path = script_directory.replace("\\vodafone_sim", "\Data\Output")
 
 def process_sim_data(source_file_path, filtered_file_path):
     # Read data from the CSV file
-    data = pd.read_csv(source_file_path)
+    data = pd.read_csv(source_file_path, low_memory=False)
 
     # Keep only the "ICCID" and "Total_Kbytes" and  columns
     data = data[["ICCID", "Total_Kbytes",]]
@@ -49,10 +47,6 @@ def process_sim_data(source_file_path, filtered_file_path):
     # Save the filtered data to a CSV file
     data.to_csv(filtered_file_path)
 
-    # Print the total sum of Total_Kbytes
-    logger.debug({total_sum})
-    # print(Itemised_data_Path)
-
     return total_sum,
 
 
@@ -78,7 +72,6 @@ def sim_inventory_filter(input_folder_path, output_folder_path):
     for filename in os.listdir(input_folder_path):
 
         if filename.startswith('SIM_Inventory_Full___'):
-            logger.debug("1")
             info = filename.split('SIM_Inventory_Full___')[
                 1].split('.')[0]
             # Construct the full path to the file
@@ -95,8 +88,12 @@ def sim_inventory_filter(input_folder_path, output_folder_path):
 filtered_full_path, source_file_path = sim_inventory_filter(
     input_folder_path, output_folder_path)
 
+# Function new sims from the SIM_Inventory_Full file
+# takes the SIM_Inventory_Full file as input
+# saves the new sims to new_sim_file
 
-def remove_new_sim(source_file_path):
+
+def remove_new_sim(source_file_path, filtered_full_path):
     # Create new sim file path
     new_sim_file_path = (f"{output_folder_path}/new_sim_file.csv")
     # Read data from the CSV file
@@ -108,22 +105,30 @@ def remove_new_sim(source_file_path):
     data = data.dropna()
     # Get today's date
     today = datetime.date.today()
-    today = str(today)
-
+    # Define a timedelta of selected days
+    d = datetime.timedelta(days=14)
+    # Subtract the timedelta from today's date
+    a = today - d
     # Define a function to convert the datetime string
+
     def convert_datetime(s):
         dt = datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S %z")
-        return dt.strftime("%Y-%m-%d")
+        return dt.date()  # Return a datetime.date object
 
     # Apply the function to the column in the DataFrame
     data["First_Used"] = data["First_Used"].apply(convert_datetime)
 
-    filt = (data["First_Used"] < today)
-    data["filt"] = filt
+    # Now you can compare the "First_Used" dates with 'a'
+    filt = (data["First_Used"] >= a)
+    data = filt[filt == True]
     data.to_csv(new_sim_file_path)
+    f_Sim_full = pd.read_csv(filtered_full_path)
+    f_Sim_full = f_Sim_full.set_index("ICCID")
+    f_Sim_full = f_Sim_full.drop(data.index, axis=0)
+    f_Sim_full.to_csv(filtered_full_path)
 
 
-remove_new_sim(source_file_path)
+remove_new_sim(source_file_path, filtered_full_path)
 
 # Loop through all files in the folder
 for filename in os.listdir(input_folder_path):
@@ -156,7 +161,6 @@ def sum_all_comunication(filtered_full_path):
     df1 = df1.set_index("ICCID")
     df2 = df2.set_index("ICCID")
     column_names = df1.columns.tolist()
-    print(column_names)
     df1 = df1[column_names].sum(axis=1)
     df1.name = "Sum of all comunication"
     df3 = df2.join(df1)
@@ -181,3 +185,5 @@ def suspend_list(filtered_full_path):
 
 
 suspend_list(filtered_full_path)
+
+print("Done")
