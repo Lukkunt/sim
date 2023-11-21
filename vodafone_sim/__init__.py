@@ -2,13 +2,20 @@ import pandas as pd
 import os
 import sys
 import datetime
+from pathlib import Path
 
 script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
 # script_directory = script_directory.replace("", "")
+print(script_directory)
+script_directory = os.path.dirname(script_directory)
 
 # Specify the folder paths
-input_folder_path = script_directory.replace("\\vodafone_sim", "\Data\Source")
-output_folder_path = script_directory.replace("\\vodafone_sim", "\Data\Output")
+# input_folder_path = script_directory.replace("/vodafone_sim", "/Data/Source")
+input_folder_path = os.path.join(script_directory, "Data", "Source")
+output_folder_path = os.path.join(script_directory, "Data", "Output")
+# output_folder_path = script_directory.replace("/vodafone_sim", "/Data/Output")
+print(input_folder_path)
+print(output_folder_path)
 
 
 def process_sim_data(source_file_path, filtered_file_path):
