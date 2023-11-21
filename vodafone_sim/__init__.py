@@ -102,7 +102,7 @@ filtered_full_path, source_file_path = sim_inventory_filter(
 
 def remove_new_sim(source_file_path, filtered_full_path):
     # Create new sim file path
-    new_sim_file_path = (f"{output_folder_path}/new_sim_file.csv")
+    new_sim_file_path = os.path.join(output_folder_path, "new_sim_file.csv")
     # Read data from the CSV file
     data = pd.read_csv(source_file_path)
 
@@ -136,6 +136,20 @@ def remove_new_sim(source_file_path, filtered_full_path):
 
 
 remove_new_sim(source_file_path, filtered_full_path)
+
+
+def whitelist():
+    whitelist_path = os.path.join(input_folder_path, "whitelist.csv")
+    whitelist = pd.read_csv(whitelist_path)
+    whitelist = whitelist[["IMSI"]]
+    whitelist = whitelist.set_index("IMSI")
+    f_Sim_full = pd.read_csv(filtered_full_path)
+    f_Sim_full = f_Sim_full.set_index("IMSI")
+    f_Sim_full = f_Sim_full.drop(whitelist.index, axis=0)
+    f_Sim_full.to_csv(filtered_full_path)
+
+
+whitelist()
 
 # Loop through all files in the folder
 for filename in os.listdir(input_folder_path):
